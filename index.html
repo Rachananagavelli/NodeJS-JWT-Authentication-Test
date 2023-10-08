@@ -52,7 +52,11 @@
                         localStorage.setItem('jwt', token);
                         getDashboard();
                     }
-                });
+                })
+                .catch(error => {
+                    console.error('Error occurred:', error);
+                    alert('ERROR!');
+                        });
         }
 
         function getDashboard() {
@@ -65,7 +69,14 @@
                 if (res && res.data && res.data.success) {
                     document.querySelector('h1.row').innerHTML = 'Dashboard';
                     document.querySelector('main').innerHTML = res.data.myContent;
+                    history.pushState(null, null, '/api/dashboard'); //
                 }
+            }).catch(error => { 
+                if (error.response && error.response.status === 401) {
+                    console.log('Token Expired')
+                    localStorage.removeItem('jwt');
+                    window.location.href = '/';
+                }// reload to root address
             });
         }
 
@@ -79,7 +90,14 @@
                 if (res && res.data && res.data.success) {
                     document.querySelector('h1.row').innerHTML = 'Settings';
                     document.querySelector('main').innerHTML = res.data.mySettings;
+                    history.pushState(null, null, '/api/settings');
                 }
+            }).catch(error => { 
+                if (error.response && error.response.status === 401) {
+                    console.log('Token Expired')
+                    localStorage.removeItem('jwt');
+                    window.location.href = '/';
+                }// reload to root address
             });
         }
     </script>
